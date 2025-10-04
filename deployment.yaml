@@ -1,6 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  namespace: hextris
   labels:
     app: hextris
   name: hextris
@@ -31,18 +32,17 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
+  namespace: hextris
   labels:
     app: hextris
   name: hextris-service
 spec:
   ports:
-  - port: 8081
+  - port: 80
     protocol: TCP
-    targetPort: 31253
   selector:
     app: hextris
-status:
-  loadBalancer: {}
+
 
 
 ---
@@ -50,6 +50,7 @@ status:
 # apiVersion: networking.k8s.io/v1
 # kind: IngressClass
 # metadata:
+#   namespace: hextris
 #   labels:
 #     app.kubernetes.io/component: controller
 #   name: ingress-class-hextris
@@ -57,26 +58,60 @@ status:
 #     ingressclass.kubernetes.io/is-default-class: "true"
 # spec:
 #   controller: k8s.io/ingress-nginx
-
+# ---
+# apiVersion: networking.k8s.io/v1
+# kind: IngressClass
+# metadata:
+#   namespace: hextris  
+#   annotations:
+#     kubectl.kubernetes.io/last-applied-configuration: |
+#       {"apiVersion":"networking.k8s.io/v1","kind":"IngressClass","metadata":{"annotations":{},"labels":{"app.kubernetes.io/component":"controller","app.kubernetes.io/instance":"ingress-nginx","app.kubernetes.io/name":"ingress-nginx","app.kubernetes.io/part-of":"ingress-nginx","app.kubernetes.io/version":"1.11.3"},"name":"nginx"},"spec":{"controller":"k8s.io/ingress-nginx"}}
+#   creationTimestamp: "2025-08-08T20:18:31Z"
+#   generation: 1
+#   labels:
+#     app.kubernetes.io/component: controller
+#     app.kubernetes.io/instance: ingress-nginx
+#     app.kubernetes.io/name: ingress-nginx
+#     app.kubernetes.io/part-of: ingress-nginx
+#     app.kubernetes.io/version: 1.11.3
+#   name: nginx
+# spec:
+#   controller: k8s.io/ingress-nginx
 
 # ---
 
-# apiVersion: networking.k8s.io/v1
-# kind: Ingress
-# metadata:
-#   name: hextris
-# spec:
-#   defaultBackend:
-#     service:
-#       name: hextris-service
-#       port:
-#         number: 80
-
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:  
+    cert-manager.io/cluster-issuer: selfsigned-cluster-issuer
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+  namespace: hextris
+  name: hextris
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: hextris.rgfdevops.cloud
+    http:
+      paths:
+      - backend:
+          service: 
+            name: hextris-service
+            port:
+              number: 80
+        path: /
+        pathType: Prefix
+  tls:
+  - hosts:
+    - hextris.rgfdevops.cloud
+    secretName: hextris-api-tls-secret
 # ---
 
 # apiVersion: extensions/v1beta1
 # kind: Deployment
 # metadata:
+#   namespace: hextris
 #   name: nginx-ingress-controller
 # spec:
 #   replicas: 1
@@ -100,4 +135,5 @@ status:
 # apiVersion: v1
 # kind: configmap
 # metadata:
-#     name: nginx-configuration
+#     namespace: hextris
+#     name: nginx-controller
