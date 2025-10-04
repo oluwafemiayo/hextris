@@ -2,6 +2,7 @@ pipeline {
   agent {
     kubernetes {
       cloud 'kubernetes'
+      label 'deploy-agent'
       defaultContainer 'kubectl'
       yaml """
 apiVersion: v1
@@ -10,10 +11,17 @@ spec:
   serviceAccountName: jenkins-sa
   containers:
   - name: kubectl
-    image: rancher/kubectl:v1.32.9-amd64
+    image: registry.k8s.io/kubectl:v1.30.0
     command:
     - cat
     tty: true
+    resources:
+      requests:
+        cpu: "100m"
+        memory: "256Mi"
+      limits: 
+        cpu: "200m"
+        memory: "512Mi"
 """
     }
   }
