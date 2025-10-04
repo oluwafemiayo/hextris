@@ -14,7 +14,7 @@ spec:
   serviceAccountName: jenkins-sa
   containers:
   - name: kubectl
-    image: docker.io/lachlanevenson/k8s-kubectl:v1.30.0
+    image: rgf25/custom_kubectl:v1.0
     command:
     - cat
     tty: true
