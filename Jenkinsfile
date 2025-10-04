@@ -10,7 +10,7 @@ spec:
   serviceAccountName: jenkins-sa
   containers:
   - name: kubectl
-    image: bitnami/kubectl:latest
+    image: rancher/kubectl:v1.32.9-arm64
     command:
     - cat
     tty: true
