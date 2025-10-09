@@ -1,0 +1,25 @@
+# Start from a lightweight base image
+FROM alpine:3.22
+
+# Set environment variables
+ENV KUBE_VERSION=v1.33.3
+ENV HELM_VERSION=v3.19.0
+
+# Install dependencies and tools
+RUN apk add --no-cache bash curl ca-certificates git tar gzip
+
+# Install kubectl
+RUN curl -LO "https://dl.k8s.io/release/${KUBE_VERSION}/bin/linux/amd64/kubectl" \
+    && install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl \
+    && kubectl version --client
+
+# Install Helm
+RUN curl -LO "https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz" \
+    && tar -zxvf helm-${HELM_VERSION}-linux-amd64.tar.gz \
+    && mv linux-amd64/helm /usr/local/bin/helm \
+    && chmod +x /usr/local/bin/helm \
+    && rm -rf linux-amd64 helm-${HELM_VERSION}-linux-amd64.tar.gz \
+    && helm version
+
+SHELL ["/bin/bash", "-c"]
+CMD ["bash"]
