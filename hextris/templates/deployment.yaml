@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "hextris.fullname" . }}
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: {{ include "hextris.name" . }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "hextris.name" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "hextris.name" . }}
+    spec:
+      containers:
+        - name: {{ include "hextris.name" . }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
