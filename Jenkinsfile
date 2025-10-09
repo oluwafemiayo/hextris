@@ -2,8 +2,7 @@ pipeline {
   agent {
     kubernetes {
       cloud 'kubernetes'
-      label 'deploy-agent'
-      defaultContainer 'kubectl'
+      defaultContainer 'helm'
       yaml """
 apiVersion: v1
 kind: Pod
