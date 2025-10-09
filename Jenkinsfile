@@ -12,7 +12,7 @@ spec:
   
   serviceAccountName: jenkins-sa
   containers:
-  - name: kubectl
+  - name: helm
     image: rgf25/helm-kubectl:v1.0
     command:
     - cat
