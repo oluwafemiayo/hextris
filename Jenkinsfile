@@ -45,7 +45,7 @@ spec:
           # Install or upgrade the Helm release
           helm upgrade --install hextris ./hextris-1.0.0.tgz \
             --namespace hextris \
-            --create-namespace
+            --create-namespace=false
 
           # Wait for deployment rollout to complete
           echo "Waiting 30 seconds for deployment rollout..."
